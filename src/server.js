@@ -1,20 +1,17 @@
 import express from "express";
+import logger from "morgan";
+import globalRouter from "./routers/globalRouter";
+import userRouter from "./routers/userRouter";
+import videoRouter from "./routers/videoRouter";
 
 const port = 4000;
 const app = express();
 
-app.get("/", (req, res) => {
-    //console.log(req);
-    //return res.end();
-    return res.send("ss");
-});
+app.use(logger("common")); // apply all routers.
 
-app.get("/login", (req, res) => {
-    return res.send("login here.");
-})
-
-
-
+app.use("/", globalRouter);
+app.use("/users", userRouter);
+app.use("/videos", videoRouter);
 
 const handleListening = () => console.log(`::Server listening on port ${port} the server is running` );
 
