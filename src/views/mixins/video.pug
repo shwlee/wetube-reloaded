@@ -1,0 +1,8 @@
+mixin videoContext(context)
+    div
+        h4=context.title
+        ul 
+            li #{context.rating}/5
+            li #{context.comments} comments.
+            li Posted #{context.createdAt}
+            li #{context.views} views.
