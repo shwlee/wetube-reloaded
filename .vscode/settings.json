@@ -1,3 +1,35 @@
 {
-    "editor.cursorSmoothCaretAnimation": true
+    "editor.formatOnSave": true,
+
+    // You can auto format any files based on the file extensions type.
+    "beautify.JSfiles": [
+        "js",
+        "json",
+        "jsbeautifyrc",
+        "jshintrc",
+        "ts"
+    ],
+    "beautify.language": {
+        "js": {
+            "type": [
+                "javascript",
+                "json",
+                "jsonc"
+            ],
+            "filename": [
+                ".jshintrc",
+                ".jsbeautifyrc"
+            ],
+            "ext": ["js", "json"]
+        },
+        "css": [
+            "css",
+            "less",
+            "scss"
+        ],
+        "html": [
+            "htm",
+            "html"
+        ]
+    }
 }

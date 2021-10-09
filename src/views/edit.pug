@@ -2,5 +2,7 @@ extends base.pug
 
 block content
     h1 Edit!
-        input(type="text" placeholder="What the!")
-        button send
+    h5 Change title of video
+        form(method="POST") 
+            input(name="title", placeholder="Video title", value=video.title)
+            input(type="submit", value="Save")
