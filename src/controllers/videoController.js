@@ -80,22 +80,18 @@ export const getUpload = (req, res) => {
 }
 
 export const postUpload = (req, res) => {
-    //console.log(req.params);
-    console.log(req.body);
 
-    // const { title } = req.body;
-    // const newVideo = {
-    //     title,
-    //     rating: 0,
-    //     comments: 0,
-    //     createdAt: "just now",
-    //     views: 0,
-    //     id: 3
-    // }
+    const { title } = req.body;
+    const newVideo = {
+        title,
+        rating: 0,
+        comments: 0,
+        createdAt: "just now",
+        views: 0,
+        id: 3
+    };
 
-    const info = {
-        pageTitle: `Upload`,
-        fakeUser,
-    }
+    videos.push(newVideo);
+
     res.redirect("/");
 }
