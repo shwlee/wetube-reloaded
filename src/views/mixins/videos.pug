@@ -1,9 +1,8 @@
+include video
+
 mixin videoContexts(context)
-    div
+    div        
         h4
             a(href=`/videos/${context.id}`)=context.title
-        ul 
-            li #{context.rating}/5
-            li #{context.comments} comments.
-            li Posted #{context.createdAt}
-            li #{context.views} views.
+        ul      
+            +videoContext(context)           

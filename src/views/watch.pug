@@ -1,8 +1,10 @@
 extends base.pug
 include mixins/video
 
-block content
-    h1 #{video.views} #{video.views <= 1 ? "view" : "views"}
-    a(href=`${video.id}/edit`) Edit Video &rarr;
-
+block content    
+    div
+        p=video.description
+        small=video.createdAt
+    a(href=`${id}/edit`) Edit Video &rarr;
     +videoContext(video)
+            

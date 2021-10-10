@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "The best way to watch videos",
     "scripts": {
-        "dev": "nodemon --exec node_modules/.bin/babel-node src/server.js --delay 1s"
+        "dev": "nodemon --exec node_modules/.bin/babel-node src/init.js --delay 1s"
     },
     "repository": {
         "type": "git",
@@ -17,6 +17,7 @@
     "homepage": "https://github.com/shwlee/wetube-reloaded#readme",
     "dependencies": {
         "express": "^4.17.1",
+        "mongoose": "^6.0.10",
         "morgan": "^1.10.0",
         "pug": "^3.0.2"
     },
