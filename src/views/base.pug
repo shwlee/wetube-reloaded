@@ -8,7 +8,7 @@ html(lang="en")
         title #{pageTitle} | Wetube
     body        
         header             
-            h1=pageTitle
+            h1=pageTitle            
             if fakeUser.loggedIn
                 small Hello #{fakeUser.user}
             nav 
@@ -20,7 +20,11 @@ html(lang="en")
                         a(href="/login") Login
             nav                 
                 li 
+                    a(href="/") Home
+                li 
                     a(href="/videos/upload") Upload video
+                li 
+                    a(href="/search") Search video
             
         main 
             block content

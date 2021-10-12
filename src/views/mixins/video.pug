@@ -1,7 +1,7 @@
 mixin videoContext(context)
-    div         
+    div   
         li #{context.title}
         li #{context.description}
-        li #{context.hashtags.join(" ")}
+        li #{context.hashtags.join(", ")}
         li Posted #{context.createdAt}
         li #{context.meta.views} views.
