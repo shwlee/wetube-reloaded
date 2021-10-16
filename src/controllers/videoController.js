@@ -1,20 +1,14 @@
 import Video from "../models/Video";
 
-const fakeUser = {
-    user: "Greg",
-    loggedIn: true
-}
-
 export const home = async (req, res) => {
     try {
         const videos = await Video.find({}).sort({ createdAt: "desc" });
         res.render("home", {
             pageTitle: "Home",
-            fakeUser,
             videos
         });
     } catch (error) {
-        res.render("server-error", error);
+        res.render("server-error", error); // TODO : implement
     }
 };
 
@@ -29,7 +23,6 @@ export const watch = async (req, res) => {
 
         const info = {
             pageTitle: video.title,
-            fakeUser,
             video
         }
         res.render("watch", info);
@@ -44,7 +37,6 @@ export const search = async (req, res) => {
 
     const info = {
         pageTitle: "Search",
-        fakeUser,
         videos
     }
     res.render("search", info);
@@ -54,7 +46,7 @@ export const getEdit = async (req, res) => {
     const id = req.params.id;
     const video = await Video.findById(id);
     if (video === null) {
-        res.render("404", { pageTitle: "Video not found", fakeUser });
+        res.status(404).render("404", { pageTitle: "Video not found", fakeUser });
         return;
     }
 
@@ -76,7 +68,7 @@ export const postEdit = async (req, res) => {
         const id = req.params.id;
         const isExist = await Video.exists({ _id: id });
         if (isExist === false) {
-            res.render("404", { pageTitle: "Video not found", fakeUser });
+            res.render("404", { pageTitle: "Video not found" });
             return;
         }
 
@@ -93,7 +85,6 @@ export const getUpload = (req, res) => {
 
     const info = {
         pageTitle: `Upload`,
-        fakeUser,
     }
     res.render("upload", info);
 }
@@ -112,7 +103,6 @@ export const postUpload = async (req, res) => {
         console.log(error);
         const info = {
             pageTitle: `Upload`,
-            fakeUser,
             errorMessage: error._message
         }
         res.render("upload", info);

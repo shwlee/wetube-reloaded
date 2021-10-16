@@ -1,8 +1,10 @@
 import express from "express";
 import logger from "morgan";
-import globalRouter from "./routers/globalRouter";
+import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
+import session from "express-session";
+import { localsMiddleware } from "./middlewares/localsMiddleware";
 
 const app = express();
 
@@ -16,7 +18,16 @@ app.use(logger("common")); // apply all routers.
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use("/", globalRouter);
+// session 미들웨어를 사용해야 브라우저 요청 시 sid 를 내려준다.
+app.use(session({
+    secret: "Hello!",
+    resave: true,
+    saveUninitialized: true
+}));
+
+app.use(localsMiddleware);
+
+app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 
