@@ -4,6 +4,7 @@ import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import { localsMiddleware } from "./middlewares/localsMiddleware";
 
 const app = express();
@@ -20,9 +21,10 @@ app.use(express.json());
 
 // session 미들웨어를 사용해야 브라우저 요청 시 sid 를 내려준다.
 app.use(session({
-    secret: "Hello!",
-    resave: true,
-    saveUninitialized: true
+    secret: process.env.COOKKIE_SECRET,
+    store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
+    resave: false,
+    saveUninitialized: false
 }));
 
 app.use(localsMiddleware);
