@@ -1,6 +1,7 @@
 import express from "express";
 import logger from "morgan";
 import rootRouter from "./routers/rootRouter";
+import authRouter from "./routers/authRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import session from "express-session";
@@ -24,12 +25,16 @@ app.use(session({
     secret: process.env.COOKKIE_SECRET,
     store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        maxAge: (30 * 24 * 60 * 60 * 1000)
+    }
 }));
 
 app.use(localsMiddleware);
 
 app.use("/", rootRouter);
+app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 
