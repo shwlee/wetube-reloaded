@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 
-const errorJoinIfNotAllGreen = async (...param) => {
+const throwJoinIfNotAllGreen = async (...param) => {
     const [email, username] = param;
     const isEmailExists = await User.exists({ email });
     if (isEmailExists) {
@@ -23,7 +23,7 @@ export const postJoin = async (req, res) => {
     try {
         const { email, name, username, password, confirmPassword, location } = req.body;
 
-        //await errorJoinIfNotAllGreen(email, username);
+        //await throwJoinIfNotAllGreen(email, username);
 
         if (password !== confirmPassword) {
             console.log("exists", exists);
@@ -100,6 +100,12 @@ export const postLogin = async (req, res) => {
         console.log("User logged in");
         req.session.loggedIn = true;
         req.session.user = user;
+
+        // !!! session 에 user 를 할당하면 _id 가 string 으로 변경된다.
+        // MongoStore 가 session 에 할당하는 object 를 json stringify 하여 저장하므로 custom type 인 ObjectId 는 그냥 문자열로 보관된다.
+        // 따라서 나중에 꺼내 쓸 때에는 반드시 string 비교를 해서 사용해야한다.
+        console.log(req.session.user._id);
+        console.log(typeof req.session.user._id);
 
         return res.redirect("/");
     } catch (error) {
@@ -218,7 +224,63 @@ export const logout = (req, res) => {
     res.redirect("/");
 };
 
-export const edit = (req, res) => res.send("EDIT");
+export const getEdit = (req, res) => {
+    return res.render("edit-profile", { pageTitle: "Edit Profile" });
+}
+
+const throwIfCantUserUpdate = async (currentId, email, username) => {
+    // 자신을 제외한 email, username 중복 검사
+    const exists = await User.findOne({
+        $and: [{
+                _id: { $ne: currentId }
+            },
+            {
+                $or: [{ email }, { username }]
+            }
+        ]
+    });
+
+    if (!exists) {
+        return;
+    }
+
+    // 자기 자신 이외 누군가 이미 사용 중이라면
+    if (exists._id.toString() !== currentId) {
+        throw new Error("The email or username already exists.");
+    }
+
+    console.log("Can edit profile!");
+}
+
+export const postEdit = async (req, res) => {
+    try {
+        const {
+            session: { user: { _id } },
+            body: {
+                email,
+                name,
+                username,
+                location
+            }
+        } = req;
+
+        await throwIfCantUserUpdate(_id, email, username);
+
+        const updatedUser = await User.findByIdAndUpdate(_id, {
+            name,
+            email,
+            username,
+            location
+        }, { new: true });
+
+        req.session.user = updatedUser;
+
+        return res.render("edit-profile");
+    } catch (error) {
+        console.log("Edit-Profile error : ", error);
+        return res.status(400).render("edit-profile", { errorMessage: error.message });
+    }
+}
 
 export const remove = (req, res) => res.send("DELETE");
 

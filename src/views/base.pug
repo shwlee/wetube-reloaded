@@ -22,11 +22,13 @@ html(lang="en")
                             a(href="/join") Join
                     else                        
                         li 
+                            a(href="/users/edit")  Edit Profile
+                        li 
                             a(href="/logout") Logout
                         li 
                             a(href="/profile") #{loggedInUser.name} profile
-                    li 
-                        a(href="/videos/upload") Upload video
+                        li 
+                            a(href="/videos/upload") Upload video                    
                     li 
                         a(href="/search") Search video
         main 
