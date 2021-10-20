@@ -12,7 +12,9 @@ const userSchema = mongoose.Schema({
 });
 
 userSchema.pre("save", async function() {
+    console.log("before hashed password : ", this.password);
     this.password = await bcrypt.hash(this.password, 5);
+    console.log("hashed password : ", this.password);
 });
 
 userSchema.static("encryptPassword", function(password) {

@@ -52,8 +52,6 @@ export const postJoin = async (req, res) => {
     }
 }
 
-
-
 export const getLogin = (req, res) => {
     console.log("login session:", req.session);
 
@@ -282,6 +280,53 @@ export const postEdit = async (req, res) => {
     }
 }
 
+export const getChangePassword = (req, res) => {
+    return res.render("change-password");
+}
+
+export const postChangePassword = async (req, res) => {
+    try {
+        const {
+            session: { user: { _id } },
+            body: {
+                currentPassword,
+                newPassword,
+                newPasswordConfirm
+            }
+        } = req;
+
+        const user = await User.findById(_id);
+        if (!user) {
+            throw new Error(`There is no matched user by stored id. : ${_id}`);
+        }
+
+        const { password: storedPassword } = user;
+
+        const hashedOldPassword = await bcrypt.hash(currentPassword, 5);
+        console.log("current:", currentPassword);
+        console.log("hashed current:", hashedOldPassword);
+        console.log("stored :", storedPassword);
+
+
+        const isOk = await bcrypt.compare(currentPassword, storedPassword);
+        if (!isOk) {
+            throw new Error("The old password is incorrected.");
+        }
+
+        if (newPassword !== newPasswordConfirm) {
+            throw new Error("The new password is not matched confirm password.");
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        res.redirect("/users/logout");
+    } catch (error) {
+        console.log("Change-Password error : ", error);
+        return res.status(400).render("change-password", { errorMessage: error.message });
+    }
+}
+
 export const remove = (req, res) => res.send("DELETE");
 
-export const profile = (req, res) => res.send("PROFILE");
+export const profile = (req, res) => res.send("PROFILE");;
