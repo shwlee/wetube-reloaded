@@ -7,9 +7,10 @@ html(lang="en")
         link(rel="stylesheet", href="https://unpkg.com/mvp.css")
         title #{pageTitle} | #{siteName}
     body        
+        #{console.log("loggedInUser : ",loggedInUser)}
         header             
-            h1=pageTitle                        
-            #{console.log("loggedIn : ", loggedIn)}
+            h1=pageTitle            
+            img(src=`/users/store/${loggedInUser.avatarFile}` width="200", height="200", alt="please, set the avatar.")
             nav 
                 ul  
                     li 

@@ -223,7 +223,7 @@ export const logout = (req, res) => {
 };
 
 export const getEdit = (req, res) => {
-    return res.render("edit-profile", { pageTitle: "Edit Profile" });
+    return res.render("edit-profile");
 }
 
 const throwIfCantUserUpdate = async (currentId, email, username) => {
@@ -250,17 +250,28 @@ const throwIfCantUserUpdate = async (currentId, email, username) => {
     console.log("Can edit profile!");
 }
 
+export const getAvatar = (req, res) => {
+    const { file } = req.params;
+    return res.sendFile(`${process.cwd()}/store/${file}`);
+}
+
 export const postEdit = async (req, res) => {
     try {
         const {
-            session: { user: { _id } },
+            session: { user: { _id, avatarFile } },
             body: {
                 email,
                 name,
                 username,
                 location
-            }
+            },
+            file
         } = req;
+
+        console.log("req.file : ", file);
+        console.log("avatarFile : ", avatarFile);
+
+        console.log(file ? file.filename : avatarFile ? avatarFile : "");
 
         await throwIfCantUserUpdate(_id, email, username);
 
@@ -268,12 +279,18 @@ export const postEdit = async (req, res) => {
             name,
             email,
             username,
+            avatarFile: file ? file.filename : avatarFile || "",
             location
         }, { new: true });
 
+        console.log("updated user : ", updatedUser);
+
         req.session.user = updatedUser;
 
-        return res.render("edit-profile");
+        console.log("session user : ", req.session.user);
+
+
+        return res.redirect("/users/edit");
     } catch (error) {
         console.log("Edit-Profile error : ", error);
         return res.status(400).render("edit-profile", { errorMessage: error.message });

@@ -36,7 +36,6 @@ export const search = async (req, res) => {
     const videos = !keyword ? [] : await Video.find({ title: { $regex: new RegExp(keyword, "i") } });
 
     const info = {
-        pageTitle: "Search",
         videos
     }
     res.render("search", info);
@@ -51,8 +50,6 @@ export const getEdit = async (req, res) => {
     }
 
     const info = {
-        pageTitle: `Editing ${id}`,
-        fakeUser,
         video
     }
 
@@ -64,21 +61,28 @@ export const postEdit = async (req, res) => {
         console.log(req.body);
         console.log(req.params);
 
-        const { title, description, hashtags } = req.body;
+        const {
+            file: { filename },
+            body: { title, description, hashtags }
+        } = req;
         const id = req.params.id;
-        const isExist = await Video.exists({ _id: id });
-        if (isExist === false) {
+        const existsVideo = await Video.findOne({ _id: id });
+        if (!existsVideo) {
             res.render("404", { pageTitle: "Video not found" });
             return;
         }
 
-        await Video.findByIdAndUpdate(id, { title, description, hashtags: Video.formatHashtags(hashtags) });
+        existsVideo.title = title;
+        existsVideo.description = description;
+        existsVideo.hashtags = Video.formatHashtags(hashtags);
+        existsVideo.file = filename ? filename : existsVideo.file || "";
+
+        existsVideo.save();
 
         res.redirect(`/videos/${id}`);
     } catch (error) {
-        res.render("server-error", error);
+        res.status(400).render("server-error", error);
     }
-
 }
 
 export const getUpload = (req, res) => {
@@ -91,12 +95,16 @@ export const getUpload = (req, res) => {
 
 export const postUpload = async (req, res) => {
     try {
-        const { title, description, hashtags } = req.body;
-        console.log(title, description, hashtags);
+        const {
+            file: { filename },
+            body: { title, description, hashtags }
+        } = req;
+
         await Video.create({
             title,
             description,
             hashtags: Video.formatHashtags(hashtags),
+            file: filename
         });
         res.redirect("/");
     } catch (error) {
