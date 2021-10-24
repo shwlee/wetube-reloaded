@@ -6,8 +6,7 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href="https://unpkg.com/mvp.css")
         title #{pageTitle} | #{siteName}
-    body        
-        #{console.log("loggedInUser : ",loggedInUser)}
+    body                
         header             
             h1=pageTitle            
             img(src=`/users/store/${loggedInUser.avatarFile}` width="200", height="200", alt="please, set the avatar.")
@@ -23,11 +22,11 @@ html(lang="en")
                             a(href="/join") Join
                     else                        
                         li 
-                            a(href="/users/edit")  Edit Profile
+                            a(href="/users/edit")  Edit User
                         li 
-                            a(href="/logout") Logout
+                            a(href="/logout") Logout                        
                         li 
-                            a(href="/profile") #{loggedInUser.name} profile
+                            a(href=`/users/profile/${loggedInUser._id}`) #{loggedInUser.name} User Profile
                         li 
                             a(href="/videos/upload") Upload video                    
                     li 

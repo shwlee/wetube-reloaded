@@ -15,9 +15,9 @@ userRouter.get("/logout", protectorMiddleware, logout);
 userRouter.get("/delete", remove);
 
 // sub router?
-const profileRouter = express.Router();
-profileRouter.get("/overview", profile);
+// const profileRouter = express.Router();
+// profileRouter.get("/overview", profile);
 
-userRouter.use("/profile", profileRouter);
+userRouter.get("/profile/:id([0-9a-f]{24})", profile);
 
 export default userRouter;

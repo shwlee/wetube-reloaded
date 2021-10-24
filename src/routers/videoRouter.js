@@ -9,6 +9,6 @@ videoRouter.get("/:id([0-9a-f]{24})", watch); // : 는 parameter 로 인식.
 videoRouter.route("/upload").all(protectorMiddleware).get(getUpload).post(uploadVideoMiddleware.single("video"), postUpload);
 videoRouter.use("/store", protectorMiddleware, express.static("store/videos"));
 
-videoRouter.get("/:id([0-9a-f]{24})/delete").all(protectorMiddleware).get(remove); // 변수 형식을 정규식으로 강제 가능.
+videoRouter.route("/delete/:id([0-9a-f]{24})").all(protectorMiddleware).get(remove); // 변수 형식을 정규식으로 강제 가능.
 
 export default videoRouter;

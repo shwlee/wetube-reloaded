@@ -1,8 +1,6 @@
 include video
 
-mixin videoContexts(context)
-    div        
-        h4
-            a(href=`/videos/${context.id}`)=context.title
-        ul      
-            +videoContext(context)           
+mixin videoContexts(videos)
+    div
+        each video in videos 
+                +videoContext(video)    

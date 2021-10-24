@@ -1,0 +1,10 @@
+extends base
+include mixins/videos
+
+block content 
+    div   
+        li #{user.name}
+        li #{user.email}
+        li #{user.location}
+    div 
+        +videoContexts(user.videos)

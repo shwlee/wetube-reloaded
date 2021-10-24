@@ -1,4 +1,5 @@
 import User from "../models/User";
+import Video from "../models/Video";
 import bcrypt from "bcrypt";
 import fetch from "node-fetch";
 
@@ -59,8 +60,6 @@ export const getLogin = (req, res) => {
         pageTitle: "Login",
         session: req.session
     }
-
-
     res.render("login", info);
 }
 
@@ -223,7 +222,7 @@ export const logout = (req, res) => {
 };
 
 export const getEdit = (req, res) => {
-    return res.render("edit-profile");
+    return res.render("edit-user");
 }
 
 const throwIfCantUserUpdate = async (currentId, email, username) => {
@@ -293,7 +292,7 @@ export const postEdit = async (req, res) => {
         return res.redirect("/users/edit");
     } catch (error) {
         console.log("Edit-Profile error : ", error);
-        return res.status(400).render("edit-profile", { errorMessage: error.message });
+        return res.status(400).render("edit-user", { errorMessage: error.message });
     }
 }
 
@@ -346,4 +345,21 @@ export const postChangePassword = async (req, res) => {
 
 export const remove = (req, res) => res.send("DELETE");
 
-export const profile = (req, res) => res.send("PROFILE");;
+export const profile = async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        return res.status(404).render("404", { pageTitle: "User not found" });
+    }
+
+    const user = await User.findById(id).populate("videos");
+    if (!user) {
+        return res.status(404).render("404", { pageTitle: "User not found" });
+    }
+
+    const info = {
+        pageTitle: `${user.name}`,
+        user
+    };
+
+    return res.render("user-profile", info);
+}
