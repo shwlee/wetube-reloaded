@@ -1,0 +1,5 @@
+{
+    "verbose": true,
+    "ignore": ["webpack.config.js", "src/client/*", "assets/*"],
+    "exec": "node_modules/.bin/babel-node src/init.js --delay 1s"
+}

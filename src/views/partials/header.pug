@@ -1,0 +1,23 @@
+header     
+    a(href="/")        
+        i.fab.fa-youtube
+    h1=pageTitle            
+    img(src=`/users/store/${loggedInUser.avatarFile}` width="200", height="200", alt="please, set the avatar.")
+    nav 
+        ul              
+            if !loggedIn                                         
+                li 
+                    a(href="/login") Login
+                li 
+                    a(href="/join") Join
+            else                        
+                li 
+                    a(href="/users/edit")  Edit User
+                li 
+                    a(href="/logout") Logout                        
+                li 
+                    a(href=`/users/profile/${loggedInUser._id}`) #{loggedInUser.name} User Profile
+                li 
+                    a(href="/videos/upload") Upload video                    
+            li 
+                a(href="/search") Search video
