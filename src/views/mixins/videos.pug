@@ -3,4 +3,6 @@ include video
 mixin videoContexts(videos)
     div
         each video in videos 
-                +videoContext(video)    
+            +videoContext(video)
+        else
+            span.empty__message No videos found.

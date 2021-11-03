@@ -1,9 +1,8 @@
-mixin videoContext(context)    
-    div   
-        h4
-            a(href=`/videos/${context.id}`)=context.title
-        li #{context.title}
-        li #{context.description}        
-        li #{context.hashtags.join(", ")}
-        li Posted #{context.createdAt}
-        li #{context.meta.views} views.
+mixin videoContext(video)    
+    a(href=`/videos/${video.id}`).video-mixin
+        div.video-mixin__thumb
+        div.video-mixin__data
+            span.video-mixin__title=video.title
+            div.video-mixin__meta
+                span #{video.owner.name} •
+                span #{video.meta.views} 회        

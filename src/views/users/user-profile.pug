@@ -2,9 +2,8 @@ extends ../base
 include ../mixins/videos
 
 block content 
-    div   
-        li #{user.name}
-        li #{user.email}
-        li #{user.location}
-    div 
+    div.profile__data   
+        img(src=`/users/store/${user.avatarFile}`).avatar
+        h3=user.name
+    div.video-grid
         +videoContexts(user.videos)

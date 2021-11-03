@@ -361,5 +361,5 @@ export const profile = async (req, res) => {
         user
     };
 
-    return res.render("user-profile", info);
+    return res.render("users/user-profile", info);
 }
