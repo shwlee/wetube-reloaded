@@ -4,15 +4,32 @@ include mixins/video
 block content    
     div 
         video(src=`/videos/store/${video.file}`, controls) 
+    div 
+        input(type="button", value="Play")#playPause
+        input(type="button", value="Mute")#Mute
+        input(type="range", value="0.5", min="0", max="1", step="0.1")#volume
+        div 
+            span#currentTime 00:00
+            span  / 
+            span#totalTime 00:00
+        input(type="range" value="0", min="0")#timeline
     div
         p=video.description
         small=video.createdAt        
         br
-        small Uploaded by 
-            a(href=`/users/profile/${video.owner._id}`) #{video.owner.name}
-    if video.owner._id.toString() === loggedInUser._id
-        a(href=`${video.id}/edit`) Edit Video &rarr;
-        br 
-        a(href=`/videos/delete/${video.id}`) Delete Video &rarr;
-        +videoContext(video)
+        
+        if video.owner
+            small Uploaded by 
+                a(href=`/users/profile/${video.owner._id}`) #{video.owner.name}
+            if video.owner._id.toString() === loggedInUser._id
+                a(href=`${video.id}/edit`) Edit Video &rarr;
+                br 
+                a(href=`/videos/delete/${video.id}`) Delete Video &rarr;
+                +videoContext(video)
+        else 
+            span Unknown
+
+
+block scripts
+    script(src="/static/js/videoPlayer.js") 
             

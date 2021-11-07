@@ -22,8 +22,6 @@ export const watch = async (req, res) => {
             return;
         }
 
-        console.log("find video: ", video);
-
         const info = {
             pageTitle: video.title,
             video,
