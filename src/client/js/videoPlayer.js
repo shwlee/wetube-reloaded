@@ -1,10 +1,12 @@
 const video = document.querySelector("video");
+const container = document.getElementById("videoContainer");
 const playPause = document.getElementById("playPause");
-const mute = document.getElementById("Mute");
+const mute = document.getElementById("mute");
 const volumeRange = document.getElementById("volume");
 const currentTimeText = document.getElementById("currentTime");
 const totalTimeText = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
+const fullScreen = document.getElementById("fullscreen");
 
 const defaultVolume = 0.5;
 let lastVolume = 0.5;
@@ -18,10 +20,11 @@ const videoMetedataLoaded = (event) => {
     currentTimeText.innerText = "00:00:00";
     totalTimeText.innerText = `${getUpperTimeFormatText(endTime, 3600)}:${getUpperTimeFormatText(endTime, 60)}:${endTime % 60}`;
 
-    playPause.value = "Play";
-    mute.value = "MUTE";
+    playPause.innerText = "Play";
+    mute.innerText = "MUTE";
     video.volume = defaultVolume;
     volumeRange.value = defaultVolume;
+    fullScreen.innerText = "FULL SCREEN";
 }
 
 function getUpperTimeFormatText(totalMillisecond, unit, useTwoSize = true) {
@@ -39,18 +42,15 @@ const playPauseHandler = () => {
     const isPaused = video.paused;
     const goToState = isPaused ? () => video.play() : () => video.pause();
 
-    playPause.value = isPaused ? "PAUSE" : "PLAY";
+    playPause.innerText = isPaused ? "PAUSE" : "PLAY";
     goToState();
 }
 
 // mute
-const setMuteText = (isMuted) => mute.value = isMuted ? "UNMUTE" : "MUTE";
+const setMuteText = (isMuted) => mute.innerText = isMuted ? "UNMUTE" : "MUTE";
 
 const muteHandler = () => {
     video.muted = !video.muted;
-
-    console.log("~~~ video: ", video.muted);
-
     const isMuted = video.muted;
     setMuteText(isMuted);
 
@@ -95,6 +95,17 @@ const timelineHandler = (event) => {
     video.currentTime = value;
 }
 
+const fullscreenHandler = () => {
+    const fullscreenElement = document.fullscreenElement;
+    const screenAction = fullscreenElement ? () => document.exitFullscreen() : () => container.requestFullscreen();
+    screenAction();
+}
+
+document.onfullscreenchange = () => {
+    const currentFullscreenElement = document.fullscreenElement;
+    fullScreen.innerText = currentFullscreenElement ? "EXIT FULL SCREEN" : "FULL SCREEN";
+}
+
 video.addEventListener("loadedmetadata", videoMetedataLoaded);
 video.addEventListener("timeupdate", videoTimeUpdateHandler);
 
@@ -102,3 +113,4 @@ playPause.addEventListener("click", playPauseHandler);
 mute.addEventListener("click", muteHandler);
 volumeRange.addEventListener("input", setVolume);
 timeline.addEventListener("input", timelineHandler);
+fullScreen.addEventListener("click", fullscreenHandler);
