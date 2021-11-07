@@ -1,15 +1,30 @@
 const video = document.querySelector("video");
 const container = document.getElementById("videoContainer");
-const playPause = document.getElementById("playPause");
+const controller = document.getElementById("videoController");
+const playPause = document.getElementById("play");
+const playPauseIcon = playPause.querySelector("i");
 const mute = document.getElementById("mute");
+const muteButtonIcon = mute.querySelector("i");
 const volumeRange = document.getElementById("volume");
 const currentTimeText = document.getElementById("currentTime");
 const totalTimeText = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
-const fullScreen = document.getElementById("fullscreen");
+const fullScreen = document.getElementById("fullScreen");
+const fullScreenButtonIcon = fullScreen.querySelector("i");
+
+const playIcon = "fa-solid fa-circle-play";
+const pauseIcon = "fa-solid fa-circle-pause";
+const muteIcon = "fa-solid fa-volume-xmark";
+const volumeIcon = "fa-solid fa-volume-up";
+const zeroTime = "00:00:00";
+const fullscreenIcon = "fa-solid fa-expand";
+const normalscreenIcon = "fa-solid fa-compress";
 
 const defaultVolume = 0.5;
 let lastVolume = 0.5;
+let controllerShowing = null;
+
+container.focus();
 
 // metadata loaded
 const videoMetedataLoaded = (event) => {
@@ -17,14 +32,11 @@ const videoMetedataLoaded = (event) => {
     const endTime = Math.floor(duration);
 
     timeline.max = endTime;
-    currentTimeText.innerText = "00:00:00";
+    currentTimeText.innerText = zeroTime;
     totalTimeText.innerText = `${getUpperTimeFormatText(endTime, 3600)}:${getUpperTimeFormatText(endTime, 60)}:${endTime % 60}`;
 
-    playPause.innerText = "Play";
-    mute.innerText = "MUTE";
     video.volume = defaultVolume;
     volumeRange.value = defaultVolume;
-    fullScreen.innerText = "FULL SCREEN";
 }
 
 function getUpperTimeFormatText(totalMillisecond, unit, useTwoSize = true) {
@@ -38,21 +50,24 @@ const getSecondFormatText = (totalMillisecond, useTwoSize = true) => {
 }
 
 // play / pause
-const playPauseHandler = () => {
+const playPauseHandler = (event) => {
+
+    console.log(event);
+
     const isPaused = video.paused;
     const goToState = isPaused ? () => video.play() : () => video.pause();
 
-    playPause.innerText = isPaused ? "PAUSE" : "PLAY";
+    playPauseIcon.className = isPaused ? pauseIcon : playIcon;
     goToState();
 }
 
 // mute
-const setMuteText = (isMuted) => mute.innerText = isMuted ? "UNMUTE" : "MUTE";
+const setMuteIconClassName = (isMuted) => muteButtonIcon.className = isMuted ? muteIcon : volumeIcon;
 
-const muteHandler = () => {
+const muteHandler = (event) => {
     video.muted = !video.muted;
     const isMuted = video.muted;
-    setMuteText(isMuted);
+    setMuteIconClassName(isMuted);
 
     // set volume range    
     const preVolume = volumeRange.value;
@@ -63,18 +78,35 @@ const muteHandler = () => {
     video.volume = volume;
 
     lastVolume = isMuted ? preVolume : lastOrDefault;
+
+    event.preventDefault();
 }
 
 // volume
-const setVolume = (event) => {
+const setVolumeHandler = (event) => {
     const { target: { value } } = event;
+    handleVolumeChanged(value);
+
+    event.preventDefault();
+}
+
+const handleVolumeChanged = (value) => {
     const isMute = value <= 0;
 
     video.volume = value;
     video.muted = isMute;
 
     // 0 일 때 mute 처리.
-    setMuteText(isMute);
+    setMuteIconClassName(isMute);
+}
+
+const setVolume = (volumeValue) => {
+    let currentVolume = Number(volumeRange.value);
+    currentVolume += volumeValue;
+    currentVolume = currentVolume < 0 ? 0 : currentVolume;
+    volumeRange.value = currentVolume;
+
+    handleVolumeChanged(Number(volumeRange.value));
 }
 
 const videoTimeUpdateHandler = (event) => {
@@ -95,22 +127,72 @@ const timelineHandler = (event) => {
     video.currentTime = value;
 }
 
+const moveTimeline = (time) => {
+    video.currentTime += time;
+}
+
 const fullscreenHandler = () => {
     const fullscreenElement = document.fullscreenElement;
     const screenAction = fullscreenElement ? () => document.exitFullscreen() : () => container.requestFullscreen();
     screenAction();
 }
 
-document.onfullscreenchange = () => {
+const setFullscreenText = () => {
     const currentFullscreenElement = document.fullscreenElement;
-    fullScreen.innerText = currentFullscreenElement ? "EXIT FULL SCREEN" : "FULL SCREEN";
+    fullScreenButtonIcon.className = currentFullscreenElement ? normalscreenIcon : fullscreenIcon;
 }
+
+const videoShowingHandler = () => {
+    if (controllerShowing) {
+        clearTimeout(controllerShowing);
+        controllerShowing = null;
+    }
+
+    controller.classList.add("showing");
+    controllerShowing = setTimeout(() => {
+        controller.classList.remove("showing");
+    }, 3000);
+}
+
+const keyInputHandler = (event) => {
+    const { keyCode } = event;
+    switch (keyCode) {
+        case 32: // space
+            playPauseHandler();
+            break;
+        case 39: // right arrow
+            moveTimeline(5);
+            break;
+        case 37: // left arrow
+            moveTimeline(-5);
+            break;
+        case 38: //up
+            setVolume(0.1);
+            break;
+        case 40: //down
+            setVolume(-0.1);
+            break;
+        case 116: // F5
+            window.location.reload();
+    }
+
+    event.preventDefault();
+}
+
+document.addEventListener("fullscreenchange", setFullscreenText);
 
 video.addEventListener("loadedmetadata", videoMetedataLoaded);
 video.addEventListener("timeupdate", videoTimeUpdateHandler);
+video.addEventListener("click", playPauseHandler);
+
+container.addEventListener("mousemove", videoShowingHandler);
+
+// key 관련 이벤트를 받으려면 tabIndex=0 세팅해야함. 
+container.addEventListener("keydown", keyInputHandler);
 
 playPause.addEventListener("click", playPauseHandler);
 mute.addEventListener("click", muteHandler);
-volumeRange.addEventListener("input", setVolume);
+volumeRange.addEventListener("input", setVolumeHandler);
+volumeRange.addEventListener("change", setVolumeHandler);
 timeline.addEventListener("input", timelineHandler);
 fullScreen.addEventListener("click", fullscreenHandler);
