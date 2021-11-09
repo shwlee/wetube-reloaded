@@ -5,7 +5,8 @@ block content
         span=errorMessage
     
     div 
-        button#recorder Recording!
+        video#recorder
+        button#recordButton Recording!
 
     form(method="POST", enctype="multipart/form-data")
         label(for="video") Video 
@@ -15,5 +16,5 @@ block content
         input(type="text", required, placeholder="hashtags, separated by comma", name="hashtags")
         input(type="submit", value="Upload video")
 
-block scripts 
+block scripts  
     script(src="/static/js/recorder.js")
