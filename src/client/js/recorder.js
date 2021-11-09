@@ -27,7 +27,6 @@ const handleDataAvailable = (event) => {
     console.log("data-available");
 
     if (event.data.size > 0) {
-
         console.log(event.data);
         download(event.data);
     } else {
@@ -38,6 +37,10 @@ const handleDataAvailable = (event) => {
 const download = (data) => {
 
     const url = URL.createObjectURL(data);
+    video.srcObject = null;
+    video.src = url;
+    video.loop = true;
+    video.play();
 
     const a = document.createElement("a");
     a.style = "display: none";
