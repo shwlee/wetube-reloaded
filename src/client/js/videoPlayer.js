@@ -179,11 +179,19 @@ const keyInputHandler = (event) => {
     event.preventDefault();
 }
 
+const videoPlayEndedHandler = () => {
+    const { id } = container.dataset;
+
+    console.log("!!!!! : ", id);
+    fetch(`/api/videos/${id}/views`, { method: "POST" });
+}
+
 document.addEventListener("fullscreenchange", setFullscreenText);
 
 video.addEventListener("loadedmetadata", videoMetedataLoaded);
 video.addEventListener("timeupdate", videoTimeUpdateHandler);
 video.addEventListener("click", playPauseHandler);
+video.addEventListener("ended", videoPlayEndedHandler);
 
 container.addEventListener("mousemove", videoShowingHandler);
 

@@ -177,3 +177,18 @@ export const remove = async (req, res) => {
         res.redirect("/");
     }
 }
+
+export const updateView = async (req, res) => {
+    const { id } = req.params;
+
+    const video = await Video.findById(id);
+    if (!video) {
+        return req.sendStatus(404);
+    }
+
+    video.meta.views++;
+
+    await video.save();
+
+    return res.sendStatus(200);
+}

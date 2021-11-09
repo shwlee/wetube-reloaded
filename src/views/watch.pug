@@ -4,7 +4,7 @@ include mixins/video
 block content        
     
     //- tabIndex=0 해야 key input을 받을 수 있다.
-    div(tabIndex="0")#videoContainer   
+    div(tabIndex="0", data-id=video.id)#videoContainer
         video(src=`/videos/store/${video.file}`) 
         div#videoController.videoControls
             div.videoControls__play
