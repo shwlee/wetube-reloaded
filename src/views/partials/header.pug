@@ -1,4 +1,10 @@
+include ../mixins/messages
+
 header     
+    div
+        #{console.log(`~~~~~ ${messages}`)}        
+        if messages.error 
+            +messages("error", messages.error)
     a(href="/").header__logo
         i.fab.fa-youtube
     nav

@@ -4,6 +4,7 @@ import User from "../models/User";
 export const home = async (req, res) => {
     try {
         const videos = await Video.find({}).sort({ createdAt: "desc" });
+        req.flash("error", "TEST error");
         res.render("home", {
             pageTitle: "Home",
             videos

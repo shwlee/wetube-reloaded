@@ -1,4 +1,5 @@
 import express from "express";
+import flash from "express-flash";
 import logger from "morgan";
 import rootRouter from "./routers/rootRouter";
 import authRouter from "./routers/authRouter";
@@ -32,6 +33,7 @@ app.use(session({
     }
 }));
 
+app.use(flash());
 app.use(localsMiddleware);
 
 app.use("/", rootRouter);

@@ -288,7 +288,6 @@ export const postEdit = async (req, res) => {
 
         console.log("session user : ", req.session.user);
 
-
         return res.redirect("/users/edit");
     } catch (error) {
         console.log("Edit-Profile error : ", error);
