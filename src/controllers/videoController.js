@@ -193,3 +193,15 @@ export const updateView = async (req, res) => {
 
     return res.sendStatus(200);
 }
+
+export const postComments = async (req, res) => {
+    console.log(req.params);
+    console.log(req.body);
+
+    const { comment } = req.body;
+    console.log(comment);
+
+    // TODO : need implementation
+
+    return res.end();
+}

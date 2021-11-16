@@ -1,8 +1,7 @@
 include ../mixins/messages
 
 header     
-    div
-        #{console.log(`~~~~~ ${messages}`)}        
+    div        
         if messages.error 
             +messages("error", messages.error)
     a(href="/").header__logo

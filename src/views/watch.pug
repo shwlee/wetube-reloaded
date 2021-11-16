@@ -5,7 +5,7 @@ block content
     
     //- tabIndex=0 해야 key input을 받을 수 있다.
     div(tabIndex="0", data-id=video.id)#videoContainer
-        video(src=`/videos/store/${video.file}`) 
+        video(src=`/videos/store/${video.file}`, preload="metadata") 
         div#videoController.videoControls
             div.videoControls__play
                 span#play.videoControls__playBtn                    
@@ -38,8 +38,14 @@ block content
                 +videoContext(video)
         else 
             span Unknown
+    if loggedIn 
+        form.video__form#commentForm
+            textarea(cols="30", rows="10", placeholder="write comment")
+            button Add comment
 
 
 block scripts
     script(src="/static/js/videoPlayer.js") 
+    if loggedIn 
+        script(src="/static/js/comments.js") 
             

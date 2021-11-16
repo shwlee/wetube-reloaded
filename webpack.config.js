@@ -4,11 +4,14 @@ const path = require("path");
 //console.log(path.resolve(__dirname, "assets/js"));
 console.log(path.resolve(__dirname, "assets", "js"));
 
+const BASE_JS = "./src/client/js/";
+
 module.exports = {
     entry: {
-        main: "./src/client/js/main.js",
-        videoPlayer: "./src/client/js/videoPlayer.js",
-        recorder: "./src/client/js/recorder.js",
+        main: BASE_JS + "main.js",
+        videoPlayer: BASE_JS + "videoPlayer.js",
+        recorder: BASE_JS + "recorder.js",
+        comments: BASE_JS + "comments.js"
     },
     output: {
         filename: "js/[name].js",
